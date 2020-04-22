@@ -6,7 +6,8 @@ from PyQt5.QtWidgets import (QApplication, QGraphicsView, QGraphicsScene)
 from PyQt5.QtGui import (QPainter, QPixmap, QColor, QImage)
 
 class Car():
-    def __init__(self, scene, x, y, angle):
+    def __init__(self, scene, x, y, angle, fps):
+        self.scene = scene
         self.x = x
         self.y = y
         self.angle = angle
@@ -18,39 +19,37 @@ class Car():
 
         self.crashed = False
 
-        self.MAX_SPEED = 4
+        # add consts
+        self.MAX_SPEED = 240/fps
         self.ACCEL = 0.4
         self.INERTIA = 0.95
         self.FRICTION = 0.97
         self.STEER = 0.8
-
         self.CAR_HEIGHT = 44
         self.CAR_WIDTH = 16
 
+        # add pixmap
         pix = QPixmap("../resources/red_car3.png")
         self.car = scene.addPixmap( pix )
 
         image = QPixmap.toImage(pix)
         grayscale = image.convertToFormat(QImage.Format_Grayscale8)
-        #self.grayscale = pix.copy()
-        # set gray manually (alpha not working)
-        #image = image.reinterpretAsFormat(QImage.Format_ARGB32)
 
         self.gray_pix = QPixmap.fromImage( grayscale )
         self.gray_pix.setMask(pix.createMaskFromColor(Qt.transparent))
 
-
-        
         self.car.setPos(self.x, self.y)
         self.car.setRotation(angle)
         self.car.setOffset((-pix.width())/2 , (-pix.height())/2)
 
+        # add lasers
         self.lasers = []
-        self.lasers.append(scene.addLine(self.x, self.y, self.x, self.y-100))
-        self.lasers.append(scene.addLine(self.x, self.y, self.x, self.y-100))
-        self.lasers.append(scene.addLine(self.x, self.y, self.x, self.y-100))
-
-        #self.laser1 = scene.addLine(self.x, self.y, self.x, self.y-100)
+        for _ in range(10):
+            self.lasers.append(scene.addLine(self.x, self.y, self.x, self.y-100))
+        
+        self.ellipses = []
+        for _ in range(10):
+            self.ellipses.append(scene.addEllipse(-3,-3,5,5) )
 
     def getPosition(self):
         return self.x, self.y
@@ -59,8 +58,17 @@ class Car():
         return self.angle
     
     def setCrashed(self):
+        if self.crashed:
+            return
+
         self.car.setPixmap(self.gray_pix)
         self.crashed = True
+        
+        for laser in self.lasers:
+            self.scene.removeItem(laser)
+
+        for ellipse in self.ellipses:
+            self.scene.removeItem(ellipse)
         
     def moveForward(self):
         y_increment = self.speed * math.cos( math.radians( self.angle ) )
@@ -73,27 +81,20 @@ class Car():
         self.x += self.inertia_x
 
         self.car.setPos(self.x, self.y)
-        #self.laser1.setLine(self.x, self.y, self.x, self.y+100)
-
-        
 
     def steerRight(self):
         if self.crashed == True:
             return
 
         self.angle += self.speed * self.STEER
-        #self.angle += self.STEER
         self.car.setRotation(self.angle)
-        #self.laser1.setRotation(self.angle)
     
     def steerLeft(self):
         if self.crashed == True:
             return
 
         self.angle -= self.speed * self.STEER
-        #self.angle -= self.STEER
         self.car.setRotation(self.angle)
-        #self.laser1.setRotation(self.angle)
 
     def accelerate(self):
         self.speed += self.ACCEL
@@ -148,11 +149,16 @@ class Car():
         return points
 
     def getLaserAngles(self):
-        return (-22, 0, 22)
+        return (0, 22, 45, 90, 135, 180, -135, -90, -45, -22)
 
-    def setEndPoints(self, endPoints):
+    def setEndPoints(self, endPoints, lengths):
+        # store point and length of laser
+        self.endPoints = endPoints
+        self.lengths = lengths
+
         for i, end in enumerate(endPoints):
             self.lasers[i].setLine(self.x, self.y, end[0], end[1])
+            self.ellipses[i].setPos(end[0], end[1])
 
 
 class Map():
@@ -162,16 +168,12 @@ class Map():
         _ = scene.addPixmap(self.background)
         view.resize(self.background.size().width(), self.background.size().height() )
 
-        self.ellipse = scene.addEllipse(-1,-1,3,3)
-
     def isColliding(self, car):
         points = car.getAllCollisionPoints()
         
         for point in points:
             x = point[0]
             y = point[1]
-            #self.ellipse.setPos(x-1, y-1)
-            #self.ellipse.setZValue(100)
 
             pixel = self.collision.toImage().pixel(x, y)
             colors = QColor(pixel).getRgb()
@@ -185,11 +187,11 @@ class Map():
         x, y = car.getPosition()
         lasers = car.getLaserAngles()
         angle = car.getAngle()
-        length = 200
+        length = 500
 
         endPoints = []
 
-        for i, laser in enumerate(lasers):
+        for laser in lasers:
             absolute_angle = angle + laser
             
             y_increment = length * math.cos( math.radians( absolute_angle ) )
@@ -201,18 +203,31 @@ class Map():
 
             endPoints.append( (x_abs, y_abs) )
 
-            #self.ellipse(x_abs, y_abs)
-            #print("x_abs, y_abs: " + str(x_abs) + " "+str(y_abs))
-            pixel = self.collision.toImage().pixel(x_abs, y_abs)
-            colors = QColor(pixel).getRgb()
+            #pixel = self.collision.toImage().pixel(x_abs, y_abs)
+            #colors = QColor(pixel).getRgb()
 
-            if colors[0:3] == (0,0,0):
-                print("laser colliding")
-            else:
-                print("not colliding")
+        #car.setEndPoints(endPoints)
 
-        car.setEndPoints(endPoints)
+        laserEnds = []
+        laserEndLengths = []
+        for endPoint in endPoints:
+            dx = (endPoint[0] - x )/length
+            dy = (endPoint[1] - y )/length
+
+            for i in range(length):
+                check_x = x + dx*i
+                check_y = y + dy*i
+
+                pixel = self.collision.toImage().pixel(check_x, check_y)
+                #print("x: "+str(check_x)+ "y: "+str(check_y))
+                colors = QColor(pixel).getRgb()
+
+                if colors[0:3] == (0,0,0):
+                    laserEnds.append((check_x, check_y))
+                    laserEndLengths.append(i)
+                    break
         
+        car.setEndPoints(laserEnds, laserEndLengths)
         
 
 class GraphWidget(QGraphicsView):
@@ -228,8 +243,10 @@ class GraphWidget(QGraphicsView):
         self.resize(self.pixmap.size().width(), self.pixmap.size().height() )"""
         self.map = Map( self.scene, self)
 
+        self.fps = 60
+
         # create car
-        self.car = Car( self.scene, 110, 400, 0)
+        self.car = Car( self.scene, 110, 400, 0, self.fps)
 
         self.setScene( self.scene )
         self.setCacheMode( QGraphicsView.CacheBackground )
@@ -245,7 +262,7 @@ class GraphWidget(QGraphicsView):
         self.keyLeft = False
 
         # create timer
-        self.startTimer(1000 / 60)
+        self.startTimer(1000 / self.fps)
 
     def keyPressEvent(self, event):
         key = event.key()
@@ -258,7 +275,7 @@ class GraphWidget(QGraphicsView):
         if key == Qt.Key_Left:
             self.keyLeft = True
         if key == Qt.Key_Space:
-            self.car = Car(self.scene, 110, 400, 0)
+            self.car = Car(self.scene, 110, 400, 0, self.fps)
 
     def keyReleaseEvent(self, event):
         key = event.key()
