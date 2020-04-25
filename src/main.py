@@ -17,13 +17,13 @@ class GraphWidget(QGraphicsView):
         self.timerId = 0
         self.fps = 30
 
-        self.mode = "neuro_evol"
+        self.mode = "manual"
         #self.mode = "manual"
 
         if self.mode == "manual":
             self.num_cars = 1
         elif self.mode == "neuro_evol":
-            self.num_cars = 1
+            self.num_cars = 20
 
         self.scene = QGraphicsScene(self)
 

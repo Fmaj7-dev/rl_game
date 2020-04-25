@@ -4,7 +4,7 @@ import numpy as np
 
 from PyQt5.QtCore import (Qt)
 from PyQt5.QtWidgets import (QApplication, QGraphicsView, QGraphicsScene)
-from PyQt5.QtGui import (QPainter, QPixmap, QColor, QImage)
+from PyQt5.QtGui import (QPainter, QPixmap, QColor, QImage, QPen)
 
 from neural_network import NeuralNetwork
 
@@ -50,13 +50,15 @@ class Car():
 
         # add lasers
         self.lasers = []
+        pen = QPen(QColor(128,128,128))
         for _ in range(10):
-            self.lasers.append(scene.addLine(self.x, self.y, self.x, self.y-100))
+            self.lasers.append(scene.addLine(self.x, self.y, self.x, self.y-100, pen))
         
         # and ellipses 
         self.ellipses = []
+        pen = QPen(QColor(200,0,0))
         for _ in range(10):
-            self.ellipses.append(scene.addEllipse(-3,-3,5,5) )
+            self.ellipses.append(scene.addEllipse(-3,-3,5,5, pen) )
 
     def getPosition(self):
         return self.x, self.y
@@ -64,6 +66,9 @@ class Car():
     def getAngle(self):
         return self.angle
     
+    def isCrashed(self):
+        return self.crashed
+
     def setCrashed(self):
         if self.crashed:
             return
