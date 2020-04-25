@@ -22,6 +22,8 @@ class Car():
 
         self.crashed = False
 
+        self.lengths = []
+
         self.nn = NeuralNetwork
 
         # add consts (FIXME: load this from a file)
@@ -127,6 +129,7 @@ class Car():
 
         self.moveForward()
 
+    # get absolute pixel value of car corner for collision
     def getCollisionPoint(self, rel_x, rel_y):
         x, y = self.x, self.y
         
@@ -171,3 +174,9 @@ class Car():
         for i, end in enumerate(endPoints):
             self.lasers[i].setLine(self.x, self.y, end[0], end[1])
             self.ellipses[i].setPos(end[0], end[1])
+
+    def getEndPoints(self):
+        return self.endPoints
+
+    def getEndPointLengths(self):
+        return self.lengths
