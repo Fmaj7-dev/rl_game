@@ -1,9 +1,12 @@
+
 import math
 import numpy as np
 
 from PyQt5.QtCore import (Qt)
 from PyQt5.QtWidgets import (QApplication, QGraphicsView, QGraphicsScene)
 from PyQt5.QtGui import (QPainter, QPixmap, QColor, QImage)
+
+from neural_network import NeuralNetwork
 
 class Car():
     def __init__(self, scene, x, y, angle, fps):
@@ -19,7 +22,9 @@ class Car():
 
         self.crashed = False
 
-        # add consts
+        self.nn = NeuralNetwork
+
+        # add consts (FIXME: load this from a file)
         self.MAX_SPEED = 240/fps
         self.ACCEL = 0.4
         self.INERTIA = 0.95
@@ -28,7 +33,7 @@ class Car():
         self.CAR_HEIGHT = 44
         self.CAR_WIDTH = 16
 
-        # add pixmap
+        # add pixmaps
         pix = QPixmap("../resources/red_car3.png")
         self.car = scene.addPixmap( pix )
 
@@ -38,6 +43,7 @@ class Car():
         self.gray_pix = QPixmap.fromImage( grayscale )
         self.gray_pix.setMask(pix.createMaskFromColor(Qt.transparent))
 
+        # init pos, rot
         self.car.setPos(self.x, self.y)
         self.car.setRotation(angle)
         self.car.setOffset((-pix.width())/2 , (-pix.height())/2)
@@ -47,6 +53,7 @@ class Car():
         for _ in range(10):
             self.lasers.append(scene.addLine(self.x, self.y, self.x, self.y-100))
         
+        # and ellipses 
         self.ellipses = []
         for _ in range(10):
             self.ellipses.append(scene.addEllipse(-3,-3,5,5) )

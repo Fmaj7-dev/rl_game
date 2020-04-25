@@ -1,26 +1,29 @@
 import math
 import numpy as np
+import threading
 
-from PyQt5.QtCore import (Qt)
+from PyQt5.QtCore import (Qt, QTimer)
 from PyQt5.QtWidgets import (QApplication, QGraphicsView, QGraphicsScene)
 from PyQt5.QtGui import (QPainter, QPixmap, QColor, QImage)
 
 from car import Car
 from map import Map
+from neuroevol import NeuroEvol
 
 class GraphWidget(QGraphicsView):
     def __init__(self):
         super(GraphWidget, self).__init__()
 
         self.timerId = 0
-        self.fps = 60
+        self.fps = 30
 
-        self.mode = "manual"
+        self.mode = "neuro_evol"
+        #self.mode = "manual"
 
         if self.mode == "manual":
             self.num_cars = 1
-        else:
-            self.num_cars = 2
+        elif self.mode == "neuro_evol":
+            self.num_cars = 1
 
         self.scene = QGraphicsScene(self)
 
@@ -46,7 +49,17 @@ class GraphWidget(QGraphicsView):
         self.keyLeft = False
 
         # create timer
-        self.startTimer(1000 / self.fps)
+        if self.mode == "manual":
+            self.startTimer(1000 / self.fps)
+
+        elif self.mode == "neuro_evol":
+            self.neuroevol = NeuroEvol(self.cars, self.map)
+            self.timer = QTimer()
+            self.timer.singleShot(0, self.runNeuroEvol)
+
+    def runNeuroEvol(self):
+        self.neuroevol.run()
+        self.timer.singleShot(0, self.runNeuroEvol)
 
     def keyPressEvent(self, event):
         key = event.key()
@@ -84,13 +97,15 @@ class GraphWidget(QGraphicsView):
             if self.keyLeft:
                 self.cars[0].steerLeft()
 
-        for car in self.cars:
-            car.update()
+            for car in self.cars:
+                car.update()
 
-            if self.map.isColliding(car):
-                car.setCrashed()
+                if self.map.isColliding(car):
+                    car.setCrashed()
 
-            self.map.laserCollision(car)
+                self.map.laserCollision(car)
+        elif self.mode == "neuro_evol":
+            self.neuroevol.start()
 
 if __name__ == '__main__':
 
