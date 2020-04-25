@@ -11,7 +11,7 @@ class NeuroEvol():
 
     def run(self):
         for car in self.cars:
-            if car.isCrashed:
+            if car.isCrashed():
                 continue
 
             if random.randint(0,3) == 0:

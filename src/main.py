@@ -16,14 +16,15 @@ class GraphWidget(QGraphicsView):
 
         self.timerId = 0
         self.fps = 30
+        self.frame = 0
 
-        self.mode = "manual"
+        self.mode = "neuro_evol"
         #self.mode = "manual"
 
         if self.mode == "manual":
             self.num_cars = 1
         elif self.mode == "neuro_evol":
-            self.num_cars = 20
+            self.num_cars = 10
 
         self.scene = QGraphicsScene(self)
 
@@ -58,8 +59,11 @@ class GraphWidget(QGraphicsView):
             self.timer.singleShot(0, self.runNeuroEvol)
 
     def runNeuroEvol(self):
+        self.frame += 1
         self.neuroevol.run()
         self.timer.singleShot(0, self.runNeuroEvol)
+        pixmap = self.grab()
+        pixmap.save("../video/neuroevol"+str(self.frame)+".png")
 
     def keyPressEvent(self, event):
         key = event.key()
@@ -87,6 +91,8 @@ class GraphWidget(QGraphicsView):
             self.keyLeft = False
 
     def timerEvent(self, event):
+        self.frame += 1
+
         if self.mode == "manual":
             if self.keyUp:
                 self.cars[0].accelerate()
@@ -104,8 +110,6 @@ class GraphWidget(QGraphicsView):
                     car.setCrashed()
 
                 self.map.laserCollision(car)
-        elif self.mode == "neuro_evol":
-            self.neuroevol.start()
 
 if __name__ == '__main__':
 
