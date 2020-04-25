@@ -15,13 +15,22 @@ class GraphWidget(QGraphicsView):
         self.timerId = 0
         self.fps = 60
 
+        self.mode = "manual"
+
+        if self.mode == "manual":
+            self.num_cars = 1
+        else:
+            self.num_cars = 2
+
         self.scene = QGraphicsScene(self)
 
         # create map
         self.map = Map( self.scene, self)
 
-        # create car
-        self.car = Car( self.scene, 110, 400, 0, self.fps)
+        # create cars
+        self.cars = []
+        for _car in range(self.num_cars):
+            self.cars.append(Car( self.scene, 110, 400, 0, self.fps))
 
         self.setScene( self.scene )
         self.setCacheMode( QGraphicsView.CacheBackground )
@@ -50,7 +59,8 @@ class GraphWidget(QGraphicsView):
         if key == Qt.Key_Left:
             self.keyLeft = True
         if key == Qt.Key_Space:
-            self.car = Car(self.scene, 110, 400, 0, self.fps)
+            if self.mode == "manual":
+                self.cars[0] = Car(self.scene, 110, 400, 0, self.fps)
 
     def keyReleaseEvent(self, event):
         key = event.key()
@@ -64,21 +74,23 @@ class GraphWidget(QGraphicsView):
             self.keyLeft = False
 
     def timerEvent(self, event):
-        if self.keyUp:
-            self.car.accelerate()
-        if self.keyDown:
-            self.car.decelerate()
-        if self.keyRight:
-            self.car.steerRight()
-        if self.keyLeft:
-            self.car.steerLeft()
+        if self.mode == "manual":
+            if self.keyUp:
+                self.cars[0].accelerate()
+            if self.keyDown:
+                self.cars[0].decelerate()
+            if self.keyRight:
+                self.cars[0].steerRight()
+            if self.keyLeft:
+                self.cars[0].steerLeft()
 
-        self.car.update()
+        for car in self.cars:
+            car.update()
 
-        if self.map.isColliding(self.car):
-            self.car.setCrashed()
+            if self.map.isColliding(car):
+                car.setCrashed()
 
-        self.map.laserCollision(self.car)
+            self.map.laserCollision(car)
 
 if __name__ == '__main__':
 

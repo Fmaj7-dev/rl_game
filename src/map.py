@@ -33,6 +33,7 @@ class Map():
         angle = car.getAngle()
         length = 500
 
+        # positions of the end of the laser before collision
         endPoints = []
 
         for laser in lasers:
@@ -47,13 +48,11 @@ class Map():
 
             endPoints.append( (x_abs, y_abs) )
 
-            #pixel = self.collision.toImage().pixel(x_abs, y_abs)
-            #colors = QColor(pixel).getRgb()
-
-        #car.setEndPoints(endPoints)
-
+        # collision laser-border
         laserEnds = []
+        # length of each collision
         laserEndLengths = []
+
         for endPoint in endPoints:
             dx = (endPoint[0] - x )/length
             dy = (endPoint[1] - y )/length
@@ -63,7 +62,6 @@ class Map():
                 check_y = y + dy*i
 
                 pixel = self.collision.toImage().pixel(check_x, check_y)
-                #print("x: "+str(check_x)+ "y: "+str(check_y))
                 colors = QColor(pixel).getRgb()
 
                 if colors[0:3] == (0,0,0):
