@@ -167,7 +167,6 @@ class Car():
         return (0, 22, 45, 90, 135, 180, -135, -90, -45, -22)
 
     def setEndPoints(self, endPoints, lengths):
-        print("setEndPoints" + str(len(endPoints)) + " "+ str(len(lengths)))
         # store point and length of laser
         self.endPoints = endPoints
         self.lengths = lengths
@@ -187,15 +186,18 @@ class Car():
             print("-------> len self.lengths: " + str(len(self.lengths)))
             return
 
-        return
-        output = self.nn.forward(np.array(self.lengths).astype(float))
+        output = self.nn.forward(self.lengths)
 
         if float(output[0]) > 0.5:
             self.accelerate()
+            print("accel")
         if float(output[1]) > 0.5:
             self.decelerate()
+            print("decel")
         if float(output[2]) > 0.5:
             self.steerLeft()
+            print("left")
         if float(output[3]) > 0.5:
             self.steerRight()
+            print("right")
 

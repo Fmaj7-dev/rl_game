@@ -11,6 +11,7 @@ class NeuroEvol():
 
     def run(self):
         for i, car in enumerate(self.cars):
+            print ("processing car number "+str(i))
             if car.isCrashed():
                 continue
 
