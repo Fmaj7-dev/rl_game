@@ -24,7 +24,7 @@ class Car():
 
         self.lengths = []
 
-        self.nn = NeuralNetwork(self)
+        self.nn = NeuralNetwork(10, 7)
 
         # add consts (FIXME: load this from a file)
         self.MAX_SPEED = 240/fps
@@ -167,6 +167,7 @@ class Car():
         return (0, 22, 45, 90, 135, 180, -135, -90, -45, -22)
 
     def setEndPoints(self, endPoints, lengths):
+        print("setEndPoints" + str(len(endPoints)) + " "+ str(len(lengths)))
         # store point and length of laser
         self.endPoints = endPoints
         self.lengths = lengths
@@ -180,3 +181,21 @@ class Car():
 
     def getEndPointLengths(self):
         return self.lengths
+
+    def runNN(self):
+        if len(self.lengths) != 10:
+            print("-------> len self.lengths: " + str(len(self.lengths)))
+            return
+
+        return
+        output = self.nn.forward(np.array(self.lengths).astype(float))
+
+        if float(output[0]) > 0.5:
+            self.accelerate()
+        if float(output[1]) > 0.5:
+            self.decelerate()
+        if float(output[2]) > 0.5:
+            self.steerLeft()
+        if float(output[3]) > 0.5:
+            self.steerRight()
+

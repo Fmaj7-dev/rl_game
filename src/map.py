@@ -57,7 +57,7 @@ class Map():
             dx = (endPoint[0] - x )/length
             dy = (endPoint[1] - y )/length
 
-            for i in range(length):
+            for i in range(800):
                 check_x = x + dx*i
                 check_y = y + dy*i
 

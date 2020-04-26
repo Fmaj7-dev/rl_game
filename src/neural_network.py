@@ -2,22 +2,21 @@ import tensorflow as tf
 import numpy as np
 
 class NeuralNetwork():
-    def __init__(self, car):
-        self.car = car
+    def __init__(self, num_inputs, num_layer1):
 
-        W0 = tf.constant(np.random.randn(3, 3), name = "W0")
-        W1 = tf.constant(np.random.randn(3, 3), name = "W1")
-        W2 = tf.constant(np.random.randn(4, 3), name = "W2")
+        self.num_outputs = 4
 
-        b0 = tf.constant(np.random.randn(3, 1), name = "b0")
-        b1 = tf.constant(np.random.randn(3, 1), name = "b1")
-        b2 = tf.constant(np.random.randn(4, 1), name = "b2")
+        self.W0 = tf.constant(np.random.randn(num_layer1, num_inputs), name = "W0")
+        self.W1 = tf.constant(np.random.randn(self.num_outputs, num_layer1), name = "W1")
 
-        x = tf.constant(np.random.randn(3, 1), name = "x")
+        self.b0 = tf.constant(np.random.randn(num_layer1, 1), name = "b0")
+        self.b1 = tf.constant(np.random.randn(self.num_outputs, 1), name = "b1")
 
-        output = self.multilayer_perceptron(x, W0, b0, W1, b1, W2, b2)
+        #x = tf.constant(np.random.randn(num_inputs, 1), name = "x")
 
-        print(output)
+        #output = self.multilayer_perceptron(x, self.W0, self.b0, self.W1, self.b1)
+
+        #print(float(output[0]))
 
 
     def denseR(self, x, W, b):
@@ -28,9 +27,17 @@ class NeuralNetwork():
         return tf.nn.sigmoid(tf.matmul(W, x) + b)
 
     @tf.function
-    def multilayer_perceptron(self, x, w0, b0, w1, b1, w2, b2):
+    def multilayer_perceptron(self, x, w0, b0, w1, b1):
         a0 = self.denseR(x, w0, b0)
-        a1 = self.denseR(a0, w1, b1)
-        output = self.denseS(a1, w2, b2)
+        output = self.denseS(a0, w1, b1)
+
+        return output
+
+    @tf.function
+    def forward(self, x):
+        print(x)
+        x_const = tf.constant(x, name = "x")
+        a0 = self.denseR(x_const, self.W0, self.b0)
+        output = self.denseS(a0, self.W1, self.b1)
 
         return output
