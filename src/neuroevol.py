@@ -17,17 +17,17 @@ class NeuroEvol():
             # test logic
             if i == 0:
                 lengths = car.getEndPointLengths()
-                print(len(lengths))
+                #print(len(lengths))
                 if len(lengths) > 9:
                     if lengths[1] +10 < lengths[9]:
                         car.steerLeft()
-                        print("left")
+                        #print("left")
                     elif lengths[9] +10 < lengths[1]:
                         car.steerRight()
-                        print("right")
+                        #print("right")
                     else:
                         car.accelerate()
-                        print("accel")
+                        #print("accel")
 
             if random.randint(0,3) == 0:
                 car.accelerate()

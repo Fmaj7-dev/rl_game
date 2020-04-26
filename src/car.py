@@ -24,7 +24,7 @@ class Car():
 
         self.lengths = []
 
-        self.nn = NeuralNetwork
+        self.nn = NeuralNetwork(self)
 
         # add consts (FIXME: load this from a file)
         self.MAX_SPEED = 240/fps
