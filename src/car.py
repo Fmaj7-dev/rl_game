@@ -187,17 +187,14 @@ class Car():
             return
 
         output = self.nn.forward(self.lengths)
-
-        if float(output[0]) > 0.5:
+        print(self.lengths)
+        print(output)
+        
+        if float(output[0]) > 0:
             self.accelerate()
-            print("accel")
-        if float(output[1]) > 0.5:
+        if float(output[1]) > 0:
             self.decelerate()
-            print("decel")
-        if float(output[2]) > 0.5:
+        if float(output[2]) > 0:
             self.steerLeft()
-            print("left")
-        if float(output[3]) > 0.5:
+        if float(output[3]) > 0:
             self.steerRight()
-            print("right")
-
