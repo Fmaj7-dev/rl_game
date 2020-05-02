@@ -10,10 +10,10 @@ class NeuralNetwork():
 
         if weights is None:
             self.W0 = tf.constant(np.random.randn(n_hidden, n_inputs), name = "W0")
-            self.W1 = tf.constant(np.random.randn(self.num_outputs, n_hidden), name = "W1")
+            self.W1 = tf.constant(np.random.randn(self.n_output, n_hidden), name = "W1")
 
             self.b0 = tf.constant(np.random.randn(n_hidden, 1), name = "b0")
-            self.b1 = tf.constant(np.random.randn(self.num_outputs, 1), name = "b1")
+            self.b1 = tf.constant(np.random.randn(self.n_output, 1), name = "b1")
         else:
             self.setWeights(weights)
 
@@ -29,7 +29,7 @@ class NeuralNetwork():
 
     # array of W0, b0, W1, b1 concatenated
     def setWeights(self, weights):
-        assert("setWeights")
+        assert(0)
 
     @tf.function
     def forward(self, x):

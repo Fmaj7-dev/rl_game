@@ -1,11 +1,14 @@
+# external
 import math
 import numpy as np
 import threading
 
+# qt
 from PyQt5.QtCore import (Qt, QTimer)
 from PyQt5.QtWidgets import (QApplication, QGraphicsView, QGraphicsScene)
 from PyQt5.QtGui import (QPainter, QPixmap, QColor, QImage)
 
+# project
 from car import Car
 from map import Map
 from neuroevol import NeuroEvol
@@ -106,7 +109,7 @@ class GraphWidget(QGraphicsView):
             for car in self.cars:
                 car.update()
 
-                self.map.updateScore(car)
+                #self.map.updateScore(car)
 
                 if self.map.isColliding(car):
                     car.setCrashed()
