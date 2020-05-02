@@ -7,8 +7,8 @@ from PyQt5.QtGui import (QPainter, QPixmap, QColor, QImage)
 
 class Map():
     def __init__(self, scene, view):
-        self.background = QPixmap ("../resources/maps/level3/collision.png")
-        self.collision = QPixmap("../resources/maps/level3/collision.png")
+        self.background = QPixmap ("../resources/maps/level4/collision.png")
+        self.collision = QPixmap("../resources/maps/level4/collision.png")
         _ = scene.addPixmap(self.background)
         view.resize(self.background.size().width(), self.background.size().height() )
 
@@ -26,6 +26,17 @@ class Map():
                 return True
 
         return False
+
+    def updateScore(self, car):
+        point = car.getPosition()
+
+        pixel = self.collision.toImage().pixel(point[0], point[1])
+        colors = QColor(pixel).getRgb()
+
+        score = colors[0]
+
+        car.setScore(score)
+        print("score: "+ str(score))
 
     def laserCollision(self, car):
         x, y = car.getPosition()

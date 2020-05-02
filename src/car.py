@@ -22,6 +22,8 @@ class Car():
 
         self.crashed = False
 
+        self.score = 0
+
         self.lengths = []
 
         self.nn = NeuralNetwork(10, 7)
@@ -129,6 +131,12 @@ class Car():
 
         self.moveForward()
 
+    def setScore(self, score):
+        self.score = score
+
+    def getScore(self):
+        return self.score
+
     # get absolute pixel value of car corner for collision
     def getCollisionPoint(self, rel_x, rel_y):
         x, y = self.x, self.y
@@ -187,8 +195,6 @@ class Car():
             return
 
         output = self.nn.forward(self.lengths)
-        print(self.lengths)
-        print(output)
         
         if float(output[0]) > 0:
             self.accelerate()

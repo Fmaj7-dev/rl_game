@@ -39,7 +39,10 @@ class NeuroEvol():
                 #pass
                 car.runNN()
 
+            
             car.update()
+
+            self.map.updateScore(car)
 
             if self.map.isColliding(car):
                 car.setCrashed()

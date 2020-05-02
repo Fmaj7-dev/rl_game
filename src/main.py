@@ -19,12 +19,12 @@ class GraphWidget(QGraphicsView):
         self.frame = 0
 
         self.mode = "neuro_evol"
-        self.mode = "manual"
+        #self.mode = "manual"
 
         if self.mode == "manual":
             self.num_cars = 1
         elif self.mode == "neuro_evol":
-            self.num_cars = 2
+            self.num_cars = 10
 
         self.scene = QGraphicsScene(self)
 
@@ -34,7 +34,7 @@ class GraphWidget(QGraphicsView):
         # create cars
         self.cars = []
         for _car in range(self.num_cars):
-            self.cars.append(Car( self.scene, 150, 400, 0, self.fps))
+            self.cars.append(Car( self.scene, 110, 400, 0, self.fps))
 
         self.setScene( self.scene )
         self.setCacheMode( QGraphicsView.CacheBackground )
@@ -105,6 +105,8 @@ class GraphWidget(QGraphicsView):
 
             for car in self.cars:
                 car.update()
+
+                self.map.updateScore(car)
 
                 if self.map.isColliding(car):
                     car.setCrashed()
