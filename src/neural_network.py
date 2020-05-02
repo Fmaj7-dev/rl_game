@@ -2,30 +2,34 @@ import tensorflow as tf
 import numpy as np
 
 class NeuralNetwork():
-    def __init__(self, num_inputs, num_layer1):
+    def __init__(self, n_inputs, n_hidden, n_output, weights = None):
 
-        self.num_outputs = 4
+        self.n_inputs = n_inputs
+        self.n_hidden = n_hidden
+        self.n_output = n_output
 
-        self.W0 = tf.constant(np.random.randn(num_layer1, num_inputs), name = "W0")
-        self.W1 = tf.constant(np.random.randn(self.num_outputs, num_layer1), name = "W1")
+        if weights is None:
+            self.W0 = tf.constant(np.random.randn(n_hidden, n_inputs), name = "W0")
+            self.W1 = tf.constant(np.random.randn(self.num_outputs, n_hidden), name = "W1")
 
-        self.b0 = tf.constant(np.random.randn(num_layer1, 1), name = "b0")
-        self.b1 = tf.constant(np.random.randn(self.num_outputs, 1), name = "b1")
+            self.b0 = tf.constant(np.random.randn(n_hidden, 1), name = "b0")
+            self.b1 = tf.constant(np.random.randn(self.num_outputs, 1), name = "b1")
+        else:
+            self.setWeights(weights)
 
-        x = tf.constant(np.random.randn(num_inputs, 1), name = "x")
-        print(x)
+        x = tf.constant(np.random.randn(n_inputs, 1), name = "x")
 
-        #output = self.multilayer_perceptron(x, self.W0, self.b0, self.W1, self.b1)
-
-        #print(float(output[0]))
-
-
+    # dense relu
     def denseR(self, x, W, b):
-        #return tf.nn.sigmoid(tf.matmul(W, x) + b)
         return tf.nn.relu(tf.matmul(W, x) + b)
 
+    # dense sigmoid
     def denseS(self, x, W, b):
         return tf.nn.sigmoid(tf.matmul(W, x) + b)
+
+    # array of W0, b0, W1, b1 concatenated
+    def setWeights(self, weights):
+        assert("setWeights")
 
     @tf.function
     def forward(self, x):

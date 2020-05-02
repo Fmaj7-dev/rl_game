@@ -1,11 +1,14 @@
 
+# external
 import math
 import numpy as np
 
+# qt
 from PyQt5.QtCore import (Qt)
 from PyQt5.QtWidgets import (QApplication, QGraphicsView, QGraphicsScene)
 from PyQt5.QtGui import (QPainter, QPixmap, QColor, QImage, QPen)
 
+# project
 from neural_network import NeuralNetwork
 
 class Car():
@@ -26,7 +29,7 @@ class Car():
 
         self.lengths = []
 
-        self.nn = NeuralNetwork(10, 7)
+        self.nn = NeuralNetwork(10, 6, 4)
 
         # add consts (FIXME: load this from a file)
         self.MAX_SPEED = 240/fps
