@@ -27,9 +27,20 @@ class GraphWidget(QGraphicsView):
         if self.mode == "manual":
             self.num_cars = 1
         elif self.mode == "neuro_evol":
-            self.num_cars = 10
+            self.num_cars = 20
 
         self.scene = QGraphicsScene(self)
+
+        self.text_generation = self.scene.addText("Generation: 0")
+        self.text_score = self.scene.addText("Best score: 0")
+
+        self.text_generation.setPos(200, 150)
+        self.text_generation.setZValue(10)
+        self.text_generation.setDefaultTextColor(Qt.red)
+
+        self.text_score.setPos(200, 170)
+        self.text_score.setZValue(10)
+        self.text_score.setDefaultTextColor(Qt.red)
 
         # create map
         self.map = Map( self.scene, self)
@@ -37,7 +48,7 @@ class GraphWidget(QGraphicsView):
         # create cars
         self.cars = []
         for _car in range(self.num_cars):
-            self.cars.append(Car( self.scene, 110, 400, 0, self.fps))
+            self.cars.append(Car( self.scene, 100, 450, 0, self.fps))
 
         self.setScene( self.scene )
         self.setCacheMode( QGraphicsView.CacheBackground )
@@ -63,7 +74,10 @@ class GraphWidget(QGraphicsView):
 
     def runNeuroEvol(self):
         self.frame += 1
-        self.neuroevol.run()
+        gen, score = self.neuroevol.run()
+        self.text_generation.setPlainText("Generation: "+str(gen))
+        self.text_score.setPlainText("Best score: "+str(score))
+
         self.timer.singleShot(0, self.runNeuroEvol)
         #pixmap = self.grab()
         #pixmap.save("../video/neuroevol"+str(self.frame)+".png")

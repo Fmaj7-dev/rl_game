@@ -246,7 +246,7 @@ class Car():
 
     def runNN(self):
         if len(self.lengths) != 10:
-            print("-------> len self.lengths: " + str(len(self.lengths)))
+            #print("-------> len self.lengths: " + str(len(self.lengths)))
             return
 
         output = self.nn.forward(self.lengths)

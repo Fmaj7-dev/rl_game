@@ -67,12 +67,12 @@ class NeuralNetwork():
     """def __str__(self):
         return str(self.W0.flatten().tolist()) + str(self.b0.flatten().tolist()) + str(self.W1.flatten().tolist()) + str(self.b1.flatten().tolist())"""
 
-    def print(self):
+    """def print(self):
         print(self.W0.numpy().flatten().tolist())
         print(self.b0)
 
         print(self.W1)
-        print(self.b1)
+        print(self.b1)"""
 
     def getArr(self):
         return np.concatenate((self.W0.numpy().flatten(), self.b0.numpy().flatten(), self.W1.numpy().flatten(), self.b1.numpy().flatten())).tolist()
@@ -83,11 +83,11 @@ class NeuralNetwork():
     """def getWeightSet(self):
         return WeightSet(self.n_inputs, self.n_hidden, self.n_output)"""
 
-    @tf.function
+    #@tf.function experimental_relax_shapes=True
     def forward(self, x):
         x = np.matrix(x).T.astype(float)
         x_const = tf.constant(x, name = "x")
-        a0 = self.denseR(x_const, self.W0, self.b0)
+        a0 = self.denseR(x, self.W0, self.b0 )
         output = self.denseS(a0, self.W1, self.b1)
 
         return output
