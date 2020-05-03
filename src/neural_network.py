@@ -77,6 +77,9 @@ class NeuralNetwork():
     def getArr(self):
         return np.concatenate((self.W0.numpy().flatten(), self.b0.numpy().flatten(), self.W1.numpy().flatten(), self.b1.numpy().flatten())).tolist()
 
+    def getStructure(self):
+        return (self.n_inputs, self.n_hidden, self.n_output)
+
     """def getWeightSet(self):
         return WeightSet(self.n_inputs, self.n_hidden, self.n_output)"""
 

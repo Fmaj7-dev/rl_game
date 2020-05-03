@@ -14,6 +14,7 @@ from neural_network import NeuralNetwork
 class Car():
     def __init__(self, scene, x, y, angle, fps):
         self.scene = scene
+
         self.x = x
         self.y = y
         self.angle = angle
@@ -40,54 +41,93 @@ class Car():
         self.CAR_HEIGHT = 44
         self.CAR_WIDTH = 16
 
-        # add pixmaps
-        pix = QPixmap("../resources/red_car3.png")
-        self.car = scene.addPixmap( pix )
+        self.INIT_POS_X = x
+        self.INIT_POS_Y = y
+        self.INIT_ANGLE = angle
 
-        image = QPixmap.toImage(pix)
+        # add pixmaps
+        self.pix = QPixmap("../resources/red_car3.png")
+        self.car = scene.addPixmap( self.pix )
+
+        image = QPixmap.toImage(self.pix)
         grayscale = image.convertToFormat(QImage.Format_Grayscale8)
 
         self.gray_pix = QPixmap.fromImage( grayscale )
-        self.gray_pix.setMask(pix.createMaskFromColor(Qt.transparent))
+        self.gray_pix.setMask(self.pix.createMaskFromColor(Qt.transparent))
 
         # init pos, rot
         self.car.setPos(self.x, self.y)
         self.car.setRotation(angle)
-        self.car.setOffset((-pix.width())/2 , (-pix.height())/2)
+        self.car.setOffset((-self.pix.width())/2 , (-self.pix.height())/2)
 
+        self.addLasers()
+
+        self.addEllipses()
+
+    def addLasers(self):
         # add lasers
         self.lasers = []
         pen = QPen(QColor(128,128,128))
         for _ in range(10):
-            self.lasers.append(scene.addLine(self.x, self.y, self.x, self.y-100, pen))
-        
+            self.lasers.append(self.scene.addLine(self.x, self.y, self.x, self.y-100, pen))
+
+    def addEllipses(self):
         # and ellipses 
         self.ellipses = []
         pen = QPen(QColor(200,0,0))
         for _ in range(10):
-            self.ellipses.append(scene.addEllipse(-3,-3,5,5, pen) )
+            self.ellipses.append(self.scene.addEllipse(-3,-3,5,5, pen) )
+
+    def removeLasers(self):
+        # remove lasers
+        for laser in self.lasers:
+            self.scene.removeItem(laser)
+        self.lasers = []
+
+    def removeEllipses(self):
+        # remove ellipses
+        for ellipse in self.ellipses:
+            self.scene.removeItem(ellipse)
+        self.ellipses = []
+
 
     def getPosition(self):
         return self.x, self.y
     
+    def reset(self):
+        self.x = self.INIT_POS_X
+        self.y = self.INIT_POS_Y
+        self.angle = self.INIT_ANGLE
+
+        self.car.setPos(self.x, self.y)
+        self.car.setRotation(self.angle)
+
+        self.removeLasers()
+        self.removeEllipses()
+
+        self.addLasers()
+        self.addEllipses()
+
     def getAngle(self):
         return self.angle
     
     def isCrashed(self):
         return self.crashed
 
-    def setCrashed(self):
+    def setCrashed(self, crash=True):
+        #if self.crashed:
+        #    return
+
+        self.crashed = crash
+
         if self.crashed:
-            return
+            self.car.setPixmap(self.gray_pix)
 
-        self.car.setPixmap(self.gray_pix)
-        self.crashed = True
+            self.removeLasers()
+            self.removeEllipses()
+        else:
+            self.car.setPixmap(self.pix)
         
-        for laser in self.lasers:
-            self.scene.removeItem(laser)
-
-        for ellipse in self.ellipses:
-            self.scene.removeItem(ellipse)
         
     def moveForward(self):
         y_increment = self.speed * math.cos( math.radians( self.angle ) )
@@ -178,6 +218,9 @@ class Car():
         return (0, 22, 45, 90, 135, 180, -135, -90, -45, -22)
 
     def setEndPoints(self, endPoints, lengths):
+        if self.crashed:
+            return
+
         # store point and length of laser
         self.endPoints = endPoints
         self.lengths = lengths
@@ -191,6 +234,15 @@ class Car():
 
     def getEndPointLengths(self):
         return self.lengths
+
+    def getWeightSet(self):
+        return self.nn.getArr()
+
+    def setWeightSet(self, weights):
+        self.nn.setWeights(weights)
+
+    def getNNStructure(self):
+        return self.nn.getStructure()
 
     def runNN(self):
         if len(self.lengths) != 10:

@@ -1,7 +1,10 @@
-src/__pycache__/car.cpython-37.pyc
 .DS_Store
-src/__pycache__/map.cpython-37.pyc
 output.avi
 video/*.png
 src/__pycache__/neural_network.cpython-37.pyc
 src/__pycache__/neuroevol.cpython-37.pyc
+src/__pycache__/neural_network.cpython-37.pyc
+src/__pycache__/weightset.cpython-37.pyc
+src/__pycache__/car.cpython-37.pyc
+src/__pycache__/map.cpython-37.pyc
+src/__pycache__/*

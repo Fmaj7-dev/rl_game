@@ -36,7 +36,7 @@ class Map():
         score = colors[0]
 
         car.setScore(score)
-        print("score: "+ str(score))
+        #print("score: "+ str(score))
 
     def laserCollision(self, car):
         x, y = car.getPosition()

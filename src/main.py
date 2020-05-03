@@ -65,8 +65,8 @@ class GraphWidget(QGraphicsView):
         self.frame += 1
         self.neuroevol.run()
         self.timer.singleShot(0, self.runNeuroEvol)
-        pixmap = self.grab()
-        pixmap.save("../video/neuroevol"+str(self.frame)+".png")
+        #pixmap = self.grab()
+        #pixmap.save("../video/neuroevol"+str(self.frame)+".png")
 
     def keyPressEvent(self, event):
         key = event.key()
