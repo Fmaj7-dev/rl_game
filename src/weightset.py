@@ -14,6 +14,7 @@ class WeightSet():
 
         self.size = self.n_W0 + self.n_b0 + self.n_W1 + self.n_b1
 
+        # weights are storead as a np.array
         if weights is None:
             self.weights = np.zeros((self.size))
         else:
@@ -22,10 +23,31 @@ class WeightSet():
 
     def getSize(self):
         return self.size
-    
-    def print(self):
-        print(self.weights)
 
+    """def getW0(self):
+        return self.n_W0
+    
+    def getW1(self):
+        return self.n_W1
+
+    def getb0(self):
+        return self.n_b0
+
+    def getb1(self):
+        return self.n_b1"""
+
+    def getWeights(self):
+        return self.weights
+
+    def getNInput(self):
+        return self.n_input
+
+    def getNHidden(self):
+        return self.n_hidden
+
+    def getNOutput(self):
+        return self.n_output
+    
     def __str__(self):
         return str(self.weights)
 

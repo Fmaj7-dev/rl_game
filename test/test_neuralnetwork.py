@@ -10,9 +10,14 @@ import unittest
 import numpy as np
 
 class TestNeuralNetwork(unittest.TestCase):
-    def test_random(self):
-        w = WeightSet(10, 6, 4)
-        nn = NeuralNetwork(10, 6, 4, w)
+    def test_assignment(self):
+        for _ in range(10):
+            w = WeightSet(2, 2, 2)
+            w.mutate()
+            nn = NeuralNetwork(2, 2, 2, w)
+
+            nn.setWeights( w )
+            self.assertEqual(nn.getArr(), w.getWeights().flatten().tolist())
         
 
 import os
