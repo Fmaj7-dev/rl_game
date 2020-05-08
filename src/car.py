@@ -36,6 +36,7 @@ class Car():
         self.MAX_SPEED = 240/fps
         self.ACCEL = 0.4
         self.INERTIA = 0.95
+        #self.INERTIA = 0
         self.FRICTION = 0.97
         self.STEER = 0.8
         self.CAR_HEIGHT = 44
@@ -48,6 +49,7 @@ class Car():
         # add pixmaps
         self.pix = QPixmap("../resources/red_car3.png")
         self.car = scene.addPixmap( self.pix )
+        self.car.setZValue(10)
 
         image = QPixmap.toImage(self.pix)
         grayscale = image.convertToFormat(QImage.Format_Grayscale8)
@@ -115,9 +117,6 @@ class Car():
         return self.crashed
 
     def setCrashed(self, crash=True):
-        #if self.crashed:
-        #    return
-
         self.crashed = crash
 
         if self.crashed:

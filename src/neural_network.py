@@ -33,7 +33,7 @@ class NeuralNetwork():
     # array of W0, b0, W1, b1 concatenated
     def setWeights(self, weights):
         line = weights.getWeights()
-        
+                
         assert(self.n_inputs == weights.getNInput())
         assert(self.n_hidden == weights.getNHidden())
         assert(self.n_output == weights.getNOutput())
@@ -58,36 +58,17 @@ class NeuralNetwork():
         b1_tmp = line[b1_start : b1_end].reshape(self.n_output, 1)
         self.b1 = tf.constant(b1_tmp.reshape(self.n_output,1), name = "b1")
 
-        """self.W0 = weights.getW0()
-        self.b0 = weights.getb0()
-        self.W1 = weigths.getW1()
-        self.b1 = weights.getb1()"""
-
-
-    """def __str__(self):
-        return str(self.W0.flatten().tolist()) + str(self.b0.flatten().tolist()) + str(self.W1.flatten().tolist()) + str(self.b1.flatten().tolist())"""
-
-    """def print(self):
-        print(self.W0.numpy().flatten().tolist())
-        print(self.b0)
-
-        print(self.W1)
-        print(self.b1)"""
-
     def getArr(self):
         return np.concatenate((self.W0.numpy().flatten(), self.b0.numpy().flatten(), self.W1.numpy().flatten(), self.b1.numpy().flatten())).tolist()
 
     def getStructure(self):
         return (self.n_inputs, self.n_hidden, self.n_output)
 
-    """def getWeightSet(self):
-        return WeightSet(self.n_inputs, self.n_hidden, self.n_output)"""
-
     #@tf.function experimental_relax_shapes=True
     def forward(self, x):
         x = np.matrix(x).T.astype(float)
         x_const = tf.constant(x, name = "x")
-        a0 = self.denseR(x, self.W0, self.b0 )
+        a0 = self.denseR(x_const, self.W0, self.b0 )
         output = self.denseS(a0, self.W1, self.b1)
 
         return output
