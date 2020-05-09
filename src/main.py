@@ -79,8 +79,10 @@ class GraphWidget(QGraphicsView):
         self.text_score.setPlainText("Best score: "+str(score))
 
         self.timer.singleShot(0, self.runNeuroEvol)
-        #pixmap = self.grab()
-        #pixmap.save("../video/neuroevol"+str(self.frame)+".png")
+
+        if gen < 10 or gen % 50 == 0:
+            pixmap = self.grab()
+            pixmap.save("../video/neuroevol"+str(self.frame)+".png")
 
     def keyPressEvent(self, event):
         key = event.key()

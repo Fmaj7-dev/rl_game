@@ -7,7 +7,7 @@ from PyQt5.QtGui import (QPainter, QPixmap, QColor, QImage)
 
 class Map():
     def __init__(self, scene, view):
-        self.background = QPixmap ("../resources/maps/level1/collision.png")
+        self.background = QPixmap ("../resources/maps/level1/background.png")
         self.collision = QPixmap("../resources/maps/level1/collision.png")
         _ = scene.addPixmap(self.background)
         view.resize(self.background.size().width(), self.background.size().height() )

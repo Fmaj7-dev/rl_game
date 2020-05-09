@@ -16,6 +16,8 @@ class NeuroEvol():
         self.generation = 0
 
         self.score = 0
+        self.last_score = 0
+        self.repeated_score = 0
 
         # number of ticks (runs) of the current generation
         self.num_ticks = 0
@@ -61,12 +63,18 @@ class NeuroEvol():
         # if every car crashed or time is up
         if num_cars_crashed >= self.num_cars:
             self.score = self.nextGeneration()
+            if self.last_score == self.score:
+                self.repeated_score += 1
+
+
 
         # advance to the next generation only if the score < 250
         # once the score reaches 250 we can assume the game has been resolved
         if self.score < 250 and self.num_ticks == self.MAX_TICKS:
             print("max ticks reached")
             self.score = self.nextGeneration()
+
+        
         
         return self.generation, self.score
 
@@ -130,18 +138,19 @@ class NeuroEvol():
 
         #"""
         for i, car in enumerate(self.cars):
+            full_random = False
+            if self.repeated_score > 10 or best_score == 31:
+                full_random = True
+                
             # car 0 will hold the best car
             if i == 0:
                 suma = np.sum(best_weights)
-                print("using best previous weights: " + str(suma))
                 w = WeightSet(n_inputs, n_hidden, n_output, best_weights)
                 if best_score == 31:
-                    print("randomizing")
                     w = WeightSet(n_inputs, n_hidden, n_output)
                     w.mutate(1.0)
                 car.setWeightSet(w)
                 idd = np.sum(self.cars[0].getWeightSet())
-                print("after setting weights: " + str(idd))
 
             # car 1 will have the second best car
             elif i == 1:
