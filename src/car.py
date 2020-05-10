@@ -36,7 +36,7 @@ class Car():
         self.MAX_SPEED = 240/fps
         self.ACCEL = 0.4
         self.INERTIA = 0.95
-        #self.INERTIA = 0
+        self.INERTIA = 0
         self.FRICTION = 0.97
         self.STEER = 0.8
         self.CAR_HEIGHT = 44

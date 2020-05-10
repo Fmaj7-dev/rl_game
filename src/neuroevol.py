@@ -139,25 +139,28 @@ class NeuroEvol():
         #"""
         for i, car in enumerate(self.cars):
             full_random = False
-            if self.repeated_score > 10 or best_score == 31:
+            if self.repeated_score > 10 or best_score < 32:
                 full_random = True
-                
+
             # car 0 will hold the best car
             if i == 0:
-                suma = np.sum(best_weights)
                 w = WeightSet(n_inputs, n_hidden, n_output, best_weights)
-                if best_score == 31:
+
+                if full_random:
                     w = WeightSet(n_inputs, n_hidden, n_output)
                     w.mutate(1.0)
+
                 car.setWeightSet(w)
                 idd = np.sum(self.cars[0].getWeightSet())
 
             # car 1 will have the second best car
             elif i == 1:
                 w = WeightSet(n_inputs, n_hidden, n_output, second_best_weights)
-                if second_best_score == 31:
+
+                if full_random:
                     w = WeightSet(n_inputs, n_hidden, n_output)
                     w.mutate(1.0)
+
                 car.setWeightSet(w)
             # car 2 and 3 will have a mixture between the best two
             elif i < 4:
@@ -168,7 +171,7 @@ class NeuroEvol():
             # car 4..n will have random mutations of the best car
             else:
                 w = WeightSet(n_inputs, n_hidden, n_output, best_weights)
-                if best_score == 31:
+                if full_random:
                     w = WeightSet(n_inputs, n_hidden, n_output)
                     w.mutate(1.0)
                 else:
