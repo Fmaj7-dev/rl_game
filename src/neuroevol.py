@@ -108,7 +108,8 @@ class NeuroEvol():
         # get nn structure 
         (n_inputs, n_hidden, n_output) = self.cars[best_car].getNNStructure()
 
-        """
+        #"""
+        breakpoint()
         for i, car in enumerate(self.cars):
             if i != best_car:
                 w = WeightSet(n_inputs, n_hidden, n_output, best_weights)
@@ -134,12 +135,13 @@ class NeuroEvol():
             car.setCrashed(False)
             car.reset()
 
-        """
-
         #"""
+
+        """
         for i, car in enumerate(self.cars):
             full_random = False
             if self.repeated_score > 10 or best_score < 32:
+                print("FULL RANDOM")
                 full_random = True
 
             # car 0 will hold the best car
@@ -180,7 +182,7 @@ class NeuroEvol():
 
             car.setCrashed(False)
             car.reset()
-            #"""
+            """
 
         self.generation += 1
         self.num_ticks = 0

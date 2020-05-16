@@ -17,9 +17,12 @@ class GraphWidget(QGraphicsView):
     def __init__(self):
         super(GraphWidget, self).__init__()
 
+        np.random.seed(288)
+
         self.timerId = 0
         self.fps = 30
         self.frame = 0
+        self.png_sequence = 0
 
         self.mode = "neuro_evol"
         #self.mode = "manual"
@@ -27,7 +30,7 @@ class GraphWidget(QGraphicsView):
         if self.mode == "manual":
             self.num_cars = 1
         elif self.mode == "neuro_evol":
-            self.num_cars = 10
+            self.num_cars = 20
 
         self.scene = QGraphicsScene(self)
 
@@ -48,7 +51,7 @@ class GraphWidget(QGraphicsView):
         # create cars
         self.cars = []
         for _car in range(self.num_cars):
-            self.cars.append(Car( self.scene, 100, 450, 0, self.fps))
+            self.cars.append(Car( self.scene, 100, 250, 0, self.fps))
 
         self.setScene( self.scene )
         self.setCacheMode( QGraphicsView.CacheBackground )
@@ -80,9 +83,10 @@ class GraphWidget(QGraphicsView):
 
         self.timer.singleShot(0, self.runNeuroEvol)
 
-        if gen < 10 or gen % 50 == 0:
+        """if gen < 10 or gen % 50 == 0:
+            self.png_sequence += 1
             pixmap = self.grab()
-            pixmap.save("../video/neuroevol"+str(self.frame)+".png")
+            pixmap.save("../video/neuroevol"+str(self.png_sequence)+".png")"""
 
     def keyPressEvent(self, event):
         key = event.key()
