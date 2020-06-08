@@ -30,13 +30,13 @@ class Car():
 
         self.lengths = []
 
-        self.nn = NeuralNetwork(10, 6, 4)
+        self.nn = NeuralNetwork(10, 6, 4, 'zero')
 
         # add consts (FIXME: load this from a file)
         self.MAX_SPEED = 240/fps
         self.ACCEL = 0.4
         self.INERTIA = 0.95
-        #self.INERTIA = 0
+        self.INERTIA = 0
         self.FRICTION = 0.97
         self.STEER = 0.8
         self.CAR_HEIGHT = 44

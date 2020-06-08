@@ -17,6 +17,12 @@ class NeuralNetwork():
                         
             self.W1 = tf.constant(np.random.randn(self.n_output, n_hidden), name = "W1")
             self.b1 = tf.constant(np.random.randn(self.n_output, 1), name = "b1")
+        if weights is 'zero':
+            self.W0 = tf.constant(np.zeros((n_hidden, n_inputs)), name = "W0")
+            self.b0 = tf.constant(np.zeros((n_hidden, 1)), name = "b0")
+                        
+            self.W1 = tf.constant(np.zeros((self.n_output, n_hidden)), name = "W1")
+            self.b1 = tf.constant(np.zeros((self.n_output, 1)), name = "b1")
         else:
             self.setWeights(weights)
 
@@ -67,8 +73,10 @@ class NeuralNetwork():
     #@tf.function experimental_relax_shapes=True
     def forward(self, x):
         x = np.matrix(x).T.astype(float)
-        x_const = tf.constant(x, name = "x")
-        a0 = self.denseR(x_const, self.W0, self.b0 )
+        #x_const = tf.constant(x, name = "x")
+        x_car = tf.Variable(x, name = "x")
+
+        a0 = self.denseR(x_car, self.W0, self.b0 )
         output = self.denseS(a0, self.W1, self.b1)
 
         return output

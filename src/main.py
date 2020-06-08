@@ -17,7 +17,7 @@ class GraphWidget(QGraphicsView):
     def __init__(self):
         super(GraphWidget, self).__init__()
 
-        np.random.seed(288)
+        np.random.seed(42)
 
         self.timerId = 0
         self.fps = 30
@@ -37,6 +37,7 @@ class GraphWidget(QGraphicsView):
         self.text_generation = self.scene.addText("Generation: 0")
         self.text_score = self.scene.addText("Best score: 0")
 
+        # text position
         self.text_generation.setPos(200, 150)
         self.text_generation.setZValue(10)
         self.text_generation.setDefaultTextColor(Qt.red)
@@ -45,8 +46,8 @@ class GraphWidget(QGraphicsView):
         self.text_score.setZValue(10)
         self.text_score.setDefaultTextColor(Qt.red)
 
-        # create map
-        self.map = Map( self.scene, self)
+        # create scene map
+        self.map = Map( self.scene, self) 
 
         # create cars
         self.cars = []

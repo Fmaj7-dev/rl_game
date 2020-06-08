@@ -58,8 +58,12 @@ class WeightSet():
         selected = np.random.rand((self.size))
         selected = np.greater((selected),(1-prob))
 
+        self.weights *= np.logical_not(selected)
+
         # add mutation from [-0.5, +0.5)
-        self.weights += (np.random.rand((self.size)) -0.5) * selected
+        self.weights += np.random.randn(self.size) * selected
+
+        #print((np.random.rand((self.size)) -0.5) * selected)
 
     @classmethod
     def mix(cls, ws1, ws2):
