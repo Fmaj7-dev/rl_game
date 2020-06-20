@@ -36,10 +36,16 @@ class NeuroEvol():
 
         for i, car in enumerate(self.cars):
 
+            # if the went backwards
+            if car.getScore() < 48:
+                if self.num_ticks > 10:
+                    car.setCrashed()
+
+            # ignore crashed cars
             if car.isCrashed():
                 num_cars_crashed += 1
                 continue
-
+            
             x1, y1 = car.getPosition()            
             car.runNN()
             car.update()
@@ -175,7 +181,7 @@ class NeuroEvol():
             #idd = np.sum(car.getWeightSet())
             #print("score of car # "+str(i) +": " + str(score) +" -> " + str(car.getWeightSet()[0]) + " " +str(car.getWeightSet()[1])+ " " +str(car.getWeightSet()[2])+ " " +str(car.getWeightSet()[3]) )
             #print("score of car # "+str(i) +": " + str(score) +" -> " + str(idd) )
-            if  score > best_score:
+            if  score >= best_score:
                 best_car = i
                 best_score = score
 

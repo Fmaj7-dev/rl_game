@@ -52,8 +52,7 @@ class WeightSet():
     def __str__(self):
         return str(self.weights)
 
-    def mutate(self, prob = 0.2):
-        print("mutate")
+    def mutate(self, prob = 0.8):
         # only those nodes whose rand > (1-prob) will be mutated 
         selected = np.random.rand((self.size))
         selected = np.greater((selected),(1-prob))
