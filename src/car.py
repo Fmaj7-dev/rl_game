@@ -32,10 +32,12 @@ class Car():
 
         self.nn = NeuralNetwork(10, 6, 4, 'zero')
 
+        self.previous_score = 0
+
         # add consts (FIXME: load this from a file)
         self.MAX_SPEED = 240/fps
         self.ACCEL = 0.4
-        self.INERTIA = 0.95
+        self.INERTIA = 0.90
         #self.INERTIA = 0
         self.FRICTION = 0.97
         self.STEER = 0.8
@@ -174,10 +176,14 @@ class Car():
         self.moveForward()
 
     def setScore(self, score):
+        self.previous_score = self.score
         self.score = score
 
     def getScore(self):
         return self.score
+
+    def getPreviousScore(self):
+        return self.previous_score
 
     # get absolute pixel value of car corner for collision
     def getCollisionPoint(self, rel_x, rel_y):
@@ -258,3 +264,5 @@ class Car():
             self.steerLeft()
         if float(output[3]) > 0:
             self.steerRight()
+        #if float(output[4]) > 0:
+        #    pass
