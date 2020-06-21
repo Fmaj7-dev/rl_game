@@ -1,7 +1,7 @@
 .DS_Store
 output.avi
 video/*.png
-src/__pycache__/neural_network.cpython-37.pyc
+src/__pycache__/*.pyc
 src/__pycache__/neuroevol.cpython-37.pyc
 src/__pycache__/neural_network.cpython-37.pyc
 src/__pycache__/weightset.cpython-37.pyc
@@ -12,3 +12,12 @@ src/bests.txt
 src/__pycache__/neural_network.cpython-37.pyc
 src/__pycache__/neuroevol.cpython-37.pyc
 src/__pycache__/weightset.cpython-37.pyc
+resources/.DS_Store
+resources/maps/.DS_Store
+src/__pycache__/neural_network.cpython-37.pyc
+src/__pycache__/neuroevol.cpython-37.pyc
+src/__pycache__/weightset.cpython-37.pyc
+test/__pycache__/test_neuralnetwork.cpython-37-pytest-5.0.1.pyc
+test/__pycache__/test_weightset.cpython-37-pytest-5.0.1.pyc
+.pytest_cache/v/cache/nodeids
+.pytest_cache/v/cache/stepwise
