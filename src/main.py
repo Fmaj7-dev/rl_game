@@ -6,7 +6,7 @@ import threading
 # qt
 from PyQt5.QtCore import (Qt, QTimer)
 from PyQt5.QtWidgets import (QApplication, QGraphicsView, QGraphicsScene)
-from PyQt5.QtGui import (QPainter, QPixmap, QColor, QImage)
+from PyQt5.QtGui import (QPainter, QPixmap, QColor, QImage, QPen)
 
 # project
 from car import Car
@@ -61,6 +61,9 @@ class GraphWidget(QGraphicsView):
         self.setTransformationAnchor( QGraphicsView.AnchorUnderMouse )
         self.setResizeAnchor( QGraphicsView.AnchorViewCenter )
 
+        self.weights = []
+        self.addNN(135, 235, 150, 200)
+
         # keyboard status
         self.keyUp = False
         self.keyDown = False
@@ -78,7 +81,7 @@ class GraphWidget(QGraphicsView):
 
     def runNeuroEvol(self):
         self.frame += 1
-        gen, score = self.neuroevol.run()
+        gen, score, best_weights = self.neuroevol.run()
         self.text_generation.setPlainText("Generation: "+str(gen))
         self.text_score.setPlainText("Best score: "+str(score))
 
@@ -88,6 +91,120 @@ class GraphWidget(QGraphicsView):
             self.png_sequence += 1
             pixmap = self.grab()
             pixmap.save("../video/neuroevol"+str(self.png_sequence)+".png")"""
+        self.updateWeights(best_weights)
+
+    def addNN(self, origin_x, origin_y, width, height):
+        self.neurons = []
+        self.origin_x = origin_x
+        self.origin_y = origin_y
+        self.end_x = origin_x + width 
+        self.end_y = origin_y + height
+
+        # number of neurons on level X
+        self.nn_level1 = 10
+        self.nn_level2 = 6
+        self.nn_level3 = 4
+
+        self.neuron_size = 7
+        offset = self.neuron_size/2
+
+        self.pen_size = 3
+
+        self.neuron_pen = QPen(Qt.black)
+
+        # draw first level of neurons
+        origin_x_level1 = self.origin_x
+        origin_y_level1 = self.origin_y
+        end_y_level1 = self.end_y
+        space_level1 = (end_y_level1 - origin_y_level1) / self.nn_level1
+
+        for i in range(self.nn_level1):
+            neuron = self.scene.addEllipse(origin_x_level1 -offset, origin_y_level1+ i*space_level1 -offset, self.neuron_size, self.neuron_size, self.neuron_pen, Qt.white)
+            neuron.setZValue(10)
+            self.neurons.append(neuron)
+
+        # draw second level of neurons
+        origin_x_level2 = (self.origin_x + self.end_x)/2
+        origin_y_level2 = self.origin_y + (self.nn_level1 - self.nn_level2)/2 * space_level1
+
+        for i in range(self.nn_level2):
+            neuron = self.scene.addEllipse(origin_x_level2-offset, origin_y_level2+ i*space_level1-offset, self.neuron_size, self.neuron_size, self.neuron_pen, Qt.white) 
+            neuron.setZValue(10)
+            self.neurons.append(neuron)
+
+        # draw third level of neurons
+        origin_x_level3 = self.end_x
+        origin_y_level3 = self.origin_y + (self.nn_level1 - self.nn_level3)/2 * space_level1
+
+        for i in range(self.nn_level3):
+            neuron = self.scene.addEllipse(origin_x_level3-offset, origin_y_level3+ i*space_level1-offset, self.neuron_size, self.neuron_size, self.neuron_pen, Qt.white) 
+            neuron.setZValue(10)
+            self.neurons.append(neuron)
+
+        pen = QPen(QColor(255,255, 0), self.pen_size)
+
+        # draw first bunch of weights
+        for i in range(self.nn_level2):
+            end_x = origin_x_level2
+            end_y = origin_y_level2+ i*space_level1
+
+            for i in range(self.nn_level1):
+                origin_x = origin_x_level1
+                origin_y = origin_y_level1+ i*space_level1
+
+                line = self.scene.addLine(origin_x, origin_y, end_x, end_y, pen)
+                self.weights.append(line)
+
+        # draw second bunc of weights
+        for i in range(self.nn_level3):
+            end_x = origin_x_level3
+            end_y = origin_y_level3+ i*space_level1
+            for i in range(self.nn_level2):
+                origin_x = origin_x_level2
+                origin_y = origin_y_level2+ i*space_level1
+
+                self.weights.append(self.scene.addLine(origin_x, origin_y, end_x, end_y, pen))
+
+
+    def updateWeights(self, weights):
+        if weights is None:
+            return
+
+        W0_start = 0
+        W0_end = self.nn_level2 * self.nn_level1
+        W0_tmp = weights[W0_start : W0_end ]
+        W0_tmp = np.clip(W0_tmp, -1, 1)
+
+        for i, weight in enumerate(W0_tmp):
+            r,g,b = 0,0,0
+            if weight < 0:
+                r = 255
+                g = 255 + weight*255
+            else:
+                r = 255 - weight*255
+                g = 255
+
+            pen = QPen(QColor(r,g,b), self.pen_size)
+            self.weights[i].setPen(pen)
+
+        b0_end = W0_end + self.nn_level2
+
+        W1_start = b0_end
+        W1_end = b0_end + self.nn_level3*self.nn_level2
+        W1_tmp = weights[W1_start : W1_end]
+        W1_tmp = np.clip(W1_tmp, -1, 1)
+
+        for i, weight in enumerate(W1_tmp):
+            r,g,b = 0,0,0
+            if weight < 0:
+                r = 255
+                g = 255 + weight*255
+            else:
+                r = 255 - weight*255
+                g = 255
+
+            pen = QPen(QColor(r,g,b), self.pen_size)
+            self.weights[i].setPen(pen)
 
     def keyPressEvent(self, event):
         key = event.key()
