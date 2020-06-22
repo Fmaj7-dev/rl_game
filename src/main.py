@@ -178,11 +178,9 @@ class GraphWidget(QGraphicsView):
         for i, weight in enumerate(W0_tmp):
             r,g,b = 0,0,0
             if weight < 0:
-                r = 255
-                g = 255 + weight*255
+                r, g = 255, 255 + weight*255
             else:
-                r = 255 - weight*255
-                g = 255
+                r, g = 255 - weight*255, 255
 
             pen = QPen(QColor(r,g,b), self.pen_size)
             self.weights[i].setPen(pen)
@@ -204,7 +202,7 @@ class GraphWidget(QGraphicsView):
                 g = 255
 
             pen = QPen(QColor(r,g,b), self.pen_size)
-            self.weights[i].setPen(pen)
+            self.weights[W0_end + i].setPen(pen)
 
     def keyPressEvent(self, event):
         key = event.key()
