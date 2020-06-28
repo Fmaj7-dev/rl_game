@@ -38,21 +38,23 @@ class GraphWidget(QGraphicsView):
         self.text_score = self.scene.addText("Best score: 0")
 
         # text position
-        self.text_generation.setPos(200, 150)
+        self.text_generation.setPos(820, 30)
         self.text_generation.setZValue(10)
-        self.text_generation.setDefaultTextColor(Qt.red)
+        self.text_generation.setDefaultTextColor(Qt.cyan)
 
-        self.text_score.setPos(200, 170)
+        self.text_score.setPos(820, 50)
         self.text_score.setZValue(10)
-        self.text_score.setDefaultTextColor(Qt.red)
+        self.text_score.setDefaultTextColor(Qt.cyan)
 
         # create scene map
         self.map = Map( self.scene, self) 
 
         # create cars
         self.cars = []
+        carNumber = 0
         for _car in range(self.num_cars):
-            self.cars.append(Car( self.scene, 100, 250, 0, self.fps))
+            self.cars.append(Car( self.scene, 100, 250, 0, self.fps, carNumber))
+            carNumber += 1
 
         self.setScene( self.scene )
         self.setCacheMode( QGraphicsView.CacheBackground )
@@ -62,7 +64,7 @@ class GraphWidget(QGraphicsView):
         self.setResizeAnchor( QGraphicsView.AnchorViewCenter )
 
         self.weights = []
-        self.addNN(135, 235, 150, 200)
+        self.addNN(823, 100, 150, 200)
 
         # keyboard status
         self.keyUp = False
@@ -87,10 +89,11 @@ class GraphWidget(QGraphicsView):
 
         self.timer.singleShot(0, self.runNeuroEvol)
 
-        """if gen < 10 or gen % 50 == 0:
+        if gen < 6 or gen % 10 == 0 or gen > 204:
             self.png_sequence += 1
             pixmap = self.grab()
-            pixmap.save("../video/neuroevol"+str(self.png_sequence)+".png")"""
+            pixmap.save("../video/neuroevol"+str(self.png_sequence)+".png", "PNG", 100)
+
         self.updateWeights(best_weights)
 
     def addNN(self, origin_x, origin_y, width, height):
@@ -170,10 +173,13 @@ class GraphWidget(QGraphicsView):
         if weights is None:
             return
 
+        clip = 2
+
         W0_start = 0
         W0_end = self.nn_level2 * self.nn_level1
         W0_tmp = weights[W0_start : W0_end ]
-        W0_tmp = np.clip(W0_tmp, -1, 1)
+        W0_tmp = np.clip(W0_tmp, -clip, clip)
+        W0_tmp /= clip
 
         for i, weight in enumerate(W0_tmp):
             r,g,b = 0,0,0
@@ -190,7 +196,8 @@ class GraphWidget(QGraphicsView):
         W1_start = b0_end
         W1_end = b0_end + self.nn_level3*self.nn_level2
         W1_tmp = weights[W1_start : W1_end]
-        W1_tmp = np.clip(W1_tmp, -1, 1)
+        W1_tmp = np.clip(W1_tmp, -clip, clip)
+        W1_tmp /= clip
 
         for i, weight in enumerate(W1_tmp):
             r,g,b = 0,0,0

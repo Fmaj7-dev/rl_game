@@ -12,8 +12,9 @@ from PyQt5.QtGui import (QPainter, QPixmap, QColor, QImage, QPen)
 from neural_network import NeuralNetwork
 
 class Car():
-    def __init__(self, scene, x, y, angle, fps):
+    def __init__(self, scene, x, y, angle, fps, carNumber):
         self.scene = scene
+        self.carNumber = carNumber
 
         self.x = x
         self.y = y
@@ -52,6 +53,20 @@ class Car():
         self.pix = QPixmap("../resources/red_car3.png")
         self.car = scene.addPixmap( self.pix )
         self.car.setZValue(10)
+
+        self.car2 = scene.addPixmap(self.pix)
+        self.car2.setZValue(10)
+        self.car2.setRotation(90)
+        self.car2.setPos(880, 300 + 24*self.carNumber)
+
+        # score text
+        self.text_score = self.scene.addText("49")
+
+        # text position
+        self.text_score.setPos(810, 295 + 24*self.carNumber)
+        self.text_score.setZValue(10)
+        self.text_score.setDefaultTextColor(Qt.cyan)
+
 
         image = QPixmap.toImage(self.pix)
         grayscale = image.convertToFormat(QImage.Format_Grayscale8)
@@ -123,11 +138,13 @@ class Car():
 
         if self.crashed:
             self.car.setPixmap(self.gray_pix)
+            self.car2.setPixmap(self.gray_pix)
 
             self.removeLasers()
             self.removeEllipses()
         else:
             self.car.setPixmap(self.pix)
+            self.car2.setPixmap(self.pix)
         
         
     def moveForward(self):
@@ -266,3 +283,10 @@ class Car():
             self.steerRight()
         #if float(output[4]) > 0:
         #    pass
+
+        score = self.getScore()
+        self.text_score.setPlainText(str(score))
+        score -= 49
+        if score < 0:
+            score = 0
+        self.car2.setPos(880 + (score/2.1), 300 + 24*self.carNumber )
