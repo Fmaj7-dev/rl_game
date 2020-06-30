@@ -17,6 +17,9 @@ class Memory():
             self.states.append(state)
             self.actions.append(action)
             self.rewards.append(reward)
+
+    def isFull(self):
+        return self.max_size == len(self.states)
     
     def get(self, item):
         if len(self.states) > item:

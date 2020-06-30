@@ -22,10 +22,12 @@ class TestMemory(unittest.TestCase):
         
         mem.clear()
 
-        for i in range(1, 300):
+        for i in range(1, 210):
             mem.push(state, action, reward)
         
         self.assertEqual(mem.size(), 200)
+
+        self.assertTrue(mem.isFull())
 
     def test_randomize(self):
         mem = Memory()

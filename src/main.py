@@ -12,6 +12,7 @@ from PyQt5.QtGui import (QPainter, QPixmap, QColor, QImage, QPen)
 from car import Car
 from map import Map
 from neuroevol import NeuroEvol
+from deepq import DeepQ
 
 class GraphWidget(QGraphicsView):
     def __init__(self):
@@ -24,13 +25,16 @@ class GraphWidget(QGraphicsView):
         self.frame = 0
         self.png_sequence = 0
 
-        self.mode = "neuro_evol"
+        #self.mode = "neuro_evol"
         #self.mode = "manual"
+        self.mode = "deepq"
 
         if self.mode == "manual":
             self.num_cars = 1
         elif self.mode == "neuro_evol":
             self.num_cars = 20
+        elif self.mode == "deepq":
+            self.num_cars = 1
 
         self.scene = QGraphicsScene(self)
 
@@ -80,6 +84,11 @@ class GraphWidget(QGraphicsView):
             self.neuroevol = NeuroEvol(self.cars, self.map)
             self.timer = QTimer()
             self.timer.singleShot(0, self.runNeuroEvol)
+        elif self.mode == "deepq":
+            self.deepq = DeepQ(self.cars[0], self.map)
+            self.timer = QTimer()
+            self.timer.singleShot( 0, self.runDeepQ )
+
 
     def runNeuroEvol(self):
         self.frame += 1
@@ -87,14 +96,17 @@ class GraphWidget(QGraphicsView):
         self.text_generation.setPlainText("Generation: "+str(gen))
         self.text_score.setPlainText("Best score: "+str(score))
 
-        self.timer.singleShot(0, self.runNeuroEvol)
-
         if gen < 6 or gen % 10 == 0 or gen > 204:
             self.png_sequence += 1
             pixmap = self.grab()
             pixmap.save("../video/neuroevol"+str(self.png_sequence)+".png", "PNG", 100)
 
         self.updateWeights(best_weights)
+        self.timer.singleShot(0, self.runNeuroEvol)
+
+    def runDeepQ(self):
+        self.deepq.run()
+        self.timer.singleShot( 0, self.runDeepQ )
 
     def addNN(self, origin_x, origin_y, width, height):
         self.neurons = []

@@ -272,21 +272,29 @@ class Car():
             return
 
         output = self.nn.forward(self.lengths)
+
+        actions = []
         
         if float(output[0]) > 0:
+            actions.append(0)
             self.accelerate()
         if float(output[1]) > 0:
+            actions.append(1)
             self.decelerate()
         if float(output[2]) > 0:
+            actions.append(2)
             self.steerLeft()
         if float(output[3]) > 0:
+            actions.append(3)
             self.steerRight()
         #if float(output[4]) > 0:
         #    pass
 
-        score = self.getScore()
-        self.text_score.setPlainText(str(score))
-        score -= 49
-        if score < 0:
-            score = 0
-        self.car2.setPos(880 + (score/2.1), 300 + 24*self.carNumber )
+        return actions
+
+        #score = self.getScore()
+        #self.text_score.setPlainText(str(score))
+        #score -= 49
+        #if score < 0:
+        #    score = 0
+        #self.car2.setPos(880 + (score/2.1), 300 + 24*self.carNumber )
